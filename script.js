@@ -78,7 +78,7 @@ function mobileRemote(text) {
        enter()
        startBtn = target
    }
-    console.log(count)
+   console.log(count)
    return count;
 }
 mobileRemote('mobileremote')
