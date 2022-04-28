@@ -8,6 +8,24 @@ const ARROW_DOWN = 'ArrowDown';
 let offsetX = 0;
 let offsetY = 0;
 
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+const patternCanvas = document.createElement('canvas');
+const patternContext = patternCanvas.getContext('2d');
+patternCanvas.width = 50;
+patternCanvas.height = 50;
+patternContext.fillStyle = '#dc2424';
+patternContext.strokeStyle = '#fff';
+patternContext.lineWidth = 2;
+patternContext.stroke();
+patternContext.fillRect(0, 0, 50, 50);
+const pattern = ctx.createPattern(patternCanvas, 'repeat');
+
+
+ctx.fillStyle = pattern;
+ctx.fillRect(0, 0, 400, 400);
+
 function changeCoords(code) {
     if (code === ARROW_RIGHT ) {
         offsetX += 25;
@@ -23,10 +41,9 @@ function changeCoords(code) {
     }
 }
 
+
 function paintLogo(x, y, code) {
-    const canvas = document.getElementById('canvas');
-    ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#fff';
+    ctx.fillStyle = pattern;
     if (code === ARROW_RIGHT) {
         ctx.clearRect(x - 25, y , 50, 50);
     }
@@ -41,12 +58,25 @@ function paintLogo(x, y, code) {
     }
     ctx.fillRect(x, y, 50, 50);
 
-
 }
-paintLogo(offsetX, offsetY, null)
+paintLogo(offsetX + 175, offsetY+175,null)
 document.addEventListener('keydown', (e) => {
+
     changeCoords(e.code)
-    paintLogo(offsetX, offsetY, e.code)
+    paintLogo(offsetX + 175, offsetY+175, e.code)
+
+    // if (offsetY <= 0) {
+    //     paintLogo(offsetX, offsetY += 400, e.code)
+    // } else {
+    //     paintLogo(offsetX, offsetY = offsetY - 400, e.code)
+    // }
+
+    // paintLogo(offsetX + 400, offsetY, e.code)
+    // paintLogo(offsetX - 400, offsetY, e.code)
+    // paintLogo(offsetX, offsetY + 400, e.code)
+    // paintLogo(offsetX, offsetY - 400, e.code)
+    console.log('offsetX : ', offsetX)
+    console.log('offsetY : ', offsetY)
 })
 
 
