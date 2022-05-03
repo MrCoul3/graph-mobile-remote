@@ -1,83 +1,181 @@
+/**
+ SOLUTION:
+ */
+
+const canvas = document.getElementById('canvas')
+const ctx = canvas.getContext('2d')
+document.addEventListener('keydown', moveRect)
+
+const WIDTH = 400
+const HEIGHT = 400
+
+canvas.width = WIDTH
+canvas.height = HEIGHT
+ctx.fillStyle = '#fff'
+
+const HORIZONTAL_LINE_WIDTH = 100
+const VERTICAL_LINE_HEIGHT = 150
+const MARGIN = 22
+const LINE_WIDTH = 16
+const VERTICAL_OFFSET = 106
+const HORIZONTAL_OFFSET = 112
+const COMMON_OFFSET = MARGIN + LINE_WIDTH
+
+const squares = [
+    // top squares
+    {
+        minX: HORIZONTAL_OFFSET + COMMON_OFFSET,
+        minY: VERTICAL_OFFSET,
+        width: 25,
+        height: LINE_WIDTH,
+    },
+    {
+        minX: HORIZONTAL_OFFSET + COMMON_OFFSET + 25,
+        minY: VERTICAL_OFFSET,
+        width: 25,
+        height: LINE_WIDTH,
+    },
+    {
+        minX: HORIZONTAL_OFFSET + COMMON_OFFSET + 25 * 2,
+        minY: VERTICAL_OFFSET,
+        width: 25,
+        height: LINE_WIDTH,
+    },
+    {
+        minX: HORIZONTAL_OFFSET + COMMON_OFFSET + 25 * 3,
+        minY: VERTICAL_OFFSET,
+        width: 25,
+        height: LINE_WIDTH,
+    },
+    // left squares
+    {
+        minX: HORIZONTAL_OFFSET,
+        minY: VERTICAL_OFFSET + COMMON_OFFSET,
+        width: LINE_WIDTH,
+        height: 25,
+    },
+    {
+        minX: HORIZONTAL_OFFSET,
+        minY: VERTICAL_OFFSET + COMMON_OFFSET + 25,
+        width: LINE_WIDTH,
+        height: 25,
+    },
+    {
+        minX: HORIZONTAL_OFFSET,
+        minY: VERTICAL_OFFSET + COMMON_OFFSET + 25 * 2,
+        width: LINE_WIDTH,
+        height: 25,
+    },
+    {
+        minX: HORIZONTAL_OFFSET,
+        minY: VERTICAL_OFFSET + COMMON_OFFSET + 25 * 3,
+        width: LINE_WIDTH,
+        height: 25,
+    },
+    {
+        minX: HORIZONTAL_OFFSET,
+        minY: VERTICAL_OFFSET + COMMON_OFFSET + 25 * 4,
+        width: LINE_WIDTH,
+        height: 25,
+    },
+    {
+        minX: HORIZONTAL_OFFSET,
+        minY: VERTICAL_OFFSET + COMMON_OFFSET + 25 * 5,
+        width: LINE_WIDTH,
+        height: 25,
+    },
+    // right squares
+    {
+        minX:
+            HORIZONTAL_OFFSET + LINE_WIDTH + MARGIN * 2 + HORIZONTAL_LINE_WIDTH,
+        minY: VERTICAL_OFFSET + COMMON_OFFSET,
+        width: LINE_WIDTH,
+        height: 25,
+    },
+    {
+        minX:
+            HORIZONTAL_OFFSET + LINE_WIDTH + MARGIN * 2 + HORIZONTAL_LINE_WIDTH,
+        minY: VERTICAL_OFFSET + COMMON_OFFSET + 25,
+        width: LINE_WIDTH,
+        height: 25,
+    },
+    {
+        minX:
+            HORIZONTAL_OFFSET + LINE_WIDTH + MARGIN * 2 + HORIZONTAL_LINE_WIDTH,
+        minY: VERTICAL_OFFSET + COMMON_OFFSET + 25 * 2,
+        width: LINE_WIDTH,
+        height: 25,
+    },
+    {
+        minX:
+            HORIZONTAL_OFFSET + LINE_WIDTH + MARGIN * 2 + HORIZONTAL_LINE_WIDTH,
+        minY: VERTICAL_OFFSET + COMMON_OFFSET + 25 * 3,
+        width: LINE_WIDTH,
+        height: 25,
+    },
+    {
+        minX:
+            HORIZONTAL_OFFSET + LINE_WIDTH + MARGIN * 2 + HORIZONTAL_LINE_WIDTH,
+        minY: VERTICAL_OFFSET + COMMON_OFFSET + 25 * 4,
+        width: LINE_WIDTH,
+        height: 25,
+    },
+    {
+        minX:
+            HORIZONTAL_OFFSET + LINE_WIDTH + MARGIN * 2 + HORIZONTAL_LINE_WIDTH,
+        minY: VERTICAL_OFFSET + COMMON_OFFSET + 25 * 5,
+        width: LINE_WIDTH,
+        height: 25,
+    },
+]
+
+const init = () => updateRect(squares)
+
+// первая отрисовка фигур
+init()
 
 
-const ARROW_RIGHT = 'ArrowRight';
-const ARROW_LEFT = 'ArrowLeft';
-const ARROW_UP = 'ArrowUp';
-const ARROW_DOWN = 'ArrowDown';
+const clearRect = () => ctx.clearRect(0, 0, WIDTH, HEIGHT)
 
-let offsetX = 0;
-let offsetY = 0;
+const updateSquares = (axis, step, max) => {
+    clearRect();
 
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
+    const minAxis = `min${axis.toUpperCase()}`;
+    const maxValue = max;
 
-const patternCanvas = document.createElement('canvas');
-const patternContext = patternCanvas.getContext('2d');
-patternCanvas.width = 50;
-patternCanvas.height = 50;
-patternContext.fillStyle = '#dc2424';
-patternContext.strokeStyle = '#fff';
-patternContext.lineWidth = 2;
-patternContext.stroke();
-patternContext.fillRect(0, 0, 50, 50);
-const pattern = ctx.createPattern(patternCanvas, 'repeat');
+    squares.forEach((square) => {
+        square[minAxis] = (maxValue + square[minAxis] + step) % maxValue;
+    });
 
+    updateRect(squares);
+}
 
-ctx.fillStyle = pattern;
-ctx.fillRect(0, 0, 400, 400);
-
-function changeCoords(code) {
-    if (code === ARROW_RIGHT ) {
-        offsetX += 25;
-    }
-    if (code === ARROW_LEFT ) {
-        offsetX = offsetX - 25;
-    }
-    if (code === ARROW_UP ) {
-        offsetY = offsetY - 25;
-    }
-    if (code === ARROW_DOWN) {
-        offsetY = offsetY + 25;
+function moveRect(event) {
+    switch (event.keyCode) {
+        // left
+        case 37:
+            updateSquares('x', -25, WIDTH);
+            break
+        // up
+        case 38:
+            updateSquares('y', -25, HEIGHT);
+            break
+        // right
+        case 39:
+            updateSquares('x', 25, WIDTH);
+            break
+        // down
+        case 40:
+            updateSquares('y', 25, HEIGHT);
+            break
+        default:
+            break
     }
 }
 
-
-function paintLogo(x, y, code) {
-    ctx.fillStyle = pattern;
-    if (code === ARROW_RIGHT) {
-        ctx.clearRect(x - 25, y , 50, 50);
-    }
-    if (code === ARROW_LEFT) {
-        ctx.clearRect(x + 25, y , 50, 50);
-    }
-    if (code === ARROW_UP) {
-        ctx.clearRect(x , y + 25 , 50, 50);
-    }
-    if (code === ARROW_DOWN) {
-        ctx.clearRect(x , y - 25 , 50, 50);
-    }
-    ctx.fillRect(x, y, 50, 50);
-
+function updateRect(squares) {
+    //console.log(squares)
+    squares.forEach((square) => {
+        ctx.fillRect(square.minX, square.minY, square.width, square.height)
+    })
 }
-paintLogo(offsetX + 175, offsetY+175,null)
-document.addEventListener('keydown', (e) => {
-
-    changeCoords(e.code)
-    paintLogo(offsetX + 175, offsetY+175, e.code)
-
-    // if (offsetY <= 0) {
-    //     paintLogo(offsetX, offsetY += 400, e.code)
-    // } else {
-    //     paintLogo(offsetX, offsetY = offsetY - 400, e.code)
-    // }
-
-    // paintLogo(offsetX + 400, offsetY, e.code)
-    // paintLogo(offsetX - 400, offsetY, e.code)
-    // paintLogo(offsetX, offsetY + 400, e.code)
-    // paintLogo(offsetX, offsetY - 400, e.code)
-    console.log('offsetX : ', offsetX)
-    console.log('offsetY : ', offsetY)
-})
-
-
-
